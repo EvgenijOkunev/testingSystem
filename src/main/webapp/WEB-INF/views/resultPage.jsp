@@ -1,11 +1,29 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
-    <title>Title</title>
+    <link rel="stylesheet" href="../../resources/styles/main.css" type="text/css"/>
+    <link href="../../resources/styles/testCases.css" rel="stylesheet" type="text/css"/>
+    <title>Результаты теста</title>
 </head>
 <body>
-<h2>Всего вопросов: ${sessionScope.testCasesNumber}</h2>
-<h2>Правильных ответов: ${sessionScope.rightAnswers}</h2>
-<h2>Процент правильных ответов: ${sessionScope.rightAnswers / sessionScope.testCasesNumber * 100}</h2>
+
+<div class="topBar">
+        <span class="right">
+            <a href="<c:url value="/"/>">
+                <strong>На главную страницу</strong>
+            </a>
+        </span>
+</div>
+<div id="wrapper" style="width: 500px; height: 300px">
+    <h2 class="h2_result">Всего вопросов: ${sessionScope.testCasesNumber}</h2>
+
+    <h2 class="h2_result">Правильных ответов: ${sessionScope.rightAnswers}</h2>
+
+    <h2 class="h2_result">Процент правильных
+        ответов: ${sessionScope.rightAnswers / sessionScope.testCasesNumber * 100}</h2>
+</div>
+
 </body>
 </html>

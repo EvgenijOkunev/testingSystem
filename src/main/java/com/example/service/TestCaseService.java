@@ -41,7 +41,7 @@ public class TestCaseService {
 
     public Integer getNumberOfTestCases() {
         Session currentSession = sessionFactory.getCurrentSession();
-        HashSet<TestCase> testCases= new HashSet<>();
+        HashSet<TestCase> testCases = new HashSet<>();
         testCases.addAll(currentSession.createCriteria(TestCase.class).list());
         return testCases.size();
     }

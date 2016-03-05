@@ -1,14 +1,13 @@
 var userAnswers = [];
 var testCasesNumber = 0;
 var currentTestCase = 0;
-
+var timeForAnswer = 30;
+var timeRemaining = 30;
 
 function addAnswer(answerId, answerText) {
 
-    // Находим нужную таблицу
     var tbody = document.getElementById('answers-table').getElementsByTagName('TBODY')[0];
 
-    // Создаем строку таблицы и добавляем ее
     var row = document.createElement("TR");
     tbody.appendChild(row);
 
@@ -26,9 +25,9 @@ function addAnswer(answerId, answerText) {
     text.type = "text";
     if (answerText != '') {
         text.value = answerText;
+        text.readOnly = true;
     }
 
-    // Создаем ячейки в вышесозданной строке и добавляем тх
     var td1 = document.createElement("TD");
     td1.appendChild(radio);
     var td2 = document.createElement("TD");
@@ -43,7 +42,14 @@ function addAnswer(answerId, answerText) {
 
 function saveTestCase() {
 
+    var errorText = document.getElementById('errorText');
+
     var questionText = document.getElementById('questionText').value;
+    if (questionText == '') {
+        errorText.innerHTML = 'Необходимо заполнить текст вопроса';
+        return false;
+    }
+
     var answers = [];
     var rightAnswer = null;
 
@@ -52,11 +58,16 @@ function saveTestCase() {
         if (table.rows[r].cells[0].childNodes[0].checked) {
             rightAnswer = r;
         }
+        var answerText = table.rows[r].cells[1].childNodes[0].value;
+        if (answerText == '') {
+            errorText.innerHTML = 'Необходимо заполнить все варианты ответа';
+            return false;
+        }
         answers.push(table.rows[r].cells[1].childNodes[0].value);
     }
 
     if (rightAnswer == null) {
-        document.getElementById('errorText').innerHTML = 'Необходимо выбрать правильный вариант ответа';
+        errorText.innerHTML = 'Необходимо выбрать правильный вариант ответа';
         return false;
     }
 
@@ -79,6 +90,8 @@ function prepareTestCases() {
 
     clearPage();
 
+    document.getElementById('questionText').readOnly = true;
+
     $.ajax({
         type: 'GET',
         url: 'prepareTestCases',
@@ -87,15 +100,17 @@ function prepareTestCases() {
         success: function (result) {
             testCasesNumber = result.testCasesNumber[0];
             getNextTestCase();
+            timer();
         }
     });
 
 }
 
-function nextQuestion() {
+function nextQuestion(timeOut) {
 
     var userAnswerId = processUserAnswer();
-    if (userAnswerId == 0) {
+    if (userAnswerId == 0 && !timeOut) {
+        document.getElementById('errorText').innerHTML = 'Необходимо выбрать правильный вариант ответа';
         return false;
     }
     else {
@@ -114,6 +129,9 @@ function nextQuestion() {
 
 function getNextTestCase() {
 
+    window.clearTimeout(timer);
+    timeRemaining = timeForAnswer;
+
     $.ajax({
         type: 'GET',
         url: 'getNextTestCase',
@@ -127,6 +145,7 @@ function getNextTestCase() {
                 addAnswer(answersId[i], answers[i]);
             }
             currentTestCase++;
+            document.getElementById('questionTitle').innerHTML = 'Вопрос ' + currentTestCase + ' из ' + testCasesNumber;
         }
     });
 
@@ -143,10 +162,6 @@ function processUserAnswer() {
         }
     }
 
-    if (rightAnswerId == 0) {
-        document.getElementById('errorText').innerHTML = 'Необходимо выбрать правильный вариант ответа';
-    }
-
     return rightAnswerId;
 
 }
@@ -159,8 +174,8 @@ function getTestResults() {
         data: {userAnswers: userAnswers},
         dataType: 'json',
         async: true,
-        success: function() {
-            location.href = "/viewTestResults/";
+        success: function () {
+            location.href = "/viewTestResults";
         }
     });
 
@@ -181,6 +196,19 @@ function clearPage() {
 
 function clearErrorText() {
     document.getElementById('errorText').innerHTML = '';
+}
+
+function timer() {
+
+    document.getElementById('timer').innerHTML = '(осталось ' + timeRemaining.toString() + ' сек. до перехода к след. вопросу)';
+
+    if (timeRemaining == 0) {
+        nextQuestion(true);
+    }
+
+    timeRemaining--;
+    window.setTimeout(timer, 1000);
+
 }
 
 

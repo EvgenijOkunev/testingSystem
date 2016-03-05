@@ -2,7 +2,6 @@ package com.example.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/")
@@ -13,7 +12,7 @@ public class MainController {
         return "mainPage";
     }
 
-    @RequestMapping(value = "/creation")
+    @RequestMapping(value = "/testCreation")
     public String createTestCases() throws Exception {
         return "addTestCases";
     }
