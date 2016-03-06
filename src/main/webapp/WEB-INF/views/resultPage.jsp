@@ -16,7 +16,7 @@
             </a>
         </span>
 </div>
-<div id="wrapper" style="width: 500px; height: 300px">
+<div id="main-wrapper" style="width: 500px; height: 300px">
     <h2 class="h2_result">Всего вопросов: ${sessionScope.testCasesNumber}</h2>
 
     <h2 class="h2_result">Правильных ответов: ${sessionScope.rightAnswers}</h2>
