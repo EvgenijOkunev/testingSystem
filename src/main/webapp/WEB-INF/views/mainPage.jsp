@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<div id="wrapper" style="width: 600px; height: 50px">
+<div id="main-wrapper" style="width: 600px; height: 50px">
     <input type="button" name="testPassing" value="Пройти тестирование" class="button" style="float: left"
            onclick='location.href="/testPassing"'/>
     <input type="button" name="addTestCases" value="Добавить тестовые вопросы" class="button" style="float: right"
